@@ -1,0 +1,88 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+basic inverse cdf sampling with qnorm
+```{r}
+set.seed(12)
+m1_u1 = runif(1000)
+
+set.seed(37)
+m1_u2 = runif(1000)
+
+m1_x = qnorm(m1_u1)
+m1_y = qnorm(m1_u2)
+
+hist(m1_x)
+hist(m1_y)
+plot(m1_x, m1_y)
+```
+
+basic inverse cdf sampling with inverse error function
+```{r}
+set.seed(9)
+m2_u1 = runif(1000)
+
+set.seed(23)
+m2_u2 = runif(1000)
+
+erfinv = function (x){
+  qnorm((1 + x)/2)/sqrt(2)
+} 
+
+m2_x = erfinv(m2_u1)
+m2_y = erfinv(m2_u2)
+
+plot(m2_x, m2_y)
+hist(m2_x)
+hist(m2_y)
+
+```
+
+box-muller transform method
+```{r}
+set.seed(45)
+m3_u1 = runif(1000)
+
+set.seed(63)
+m3_u2 = runif(1000)
+
+s = -log(m3_u1)
+theta = 2*pi*m3_u2
+r = sqrt(2*s)
+
+m3_x = r * cos(theta)
+m3_y = r * sin(theta)
+
+hist(m3_x)
+hist(m3_y)
+plot(m3_x, m3_y)
+```
+
+
+central limit thm method
+```{r}
+n_points = 1000
+n_adds = 1000
+
+set.seed(105)
+random_matrix = matrix(runif(n_points * n_adds), nrow = n_adds, ncol = n_points)
+
+gaussians = colSums(random_matrix)
+
+gmean = n_adds / 2
+gstd = sqrt(n_adds / 12)
+rescaled_gaussians = (gaussians - gmean) / gstd
+
+hist(rescaled_gaussians, nclass = 50)
+plot(rescaled_gaussians)
+
+```
+
+
+
+
+
+
+
