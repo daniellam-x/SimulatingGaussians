@@ -78,6 +78,7 @@ rescaled_gaussians = (gaussians - gmean) / gstd
 hist(rescaled_gaussians, nclass = 50)
 plot(rescaled_gaussians)
 
+##test commit
 ```
 
 
