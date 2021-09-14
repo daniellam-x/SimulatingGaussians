@@ -19,27 +19,6 @@ hist(m1_y)
 plot(m1_x, m1_y)
 ```
 
-basic inverse cdf sampling with inverse error function
-```{r}
-set.seed(9)
-m2_u1 = runif(1000)
-
-set.seed(23)
-m2_u2 = runif(1000)
-
-erfinv = function (x){
-  qnorm((1 + x)/2)/sqrt(2)
-} 
-
-m2_x = erfinv(m2_u1)
-m2_y = erfinv(m2_u2)
-
-plot(m2_x, m2_y)
-hist(m2_x)
-hist(m2_y)
-
-```
-
 box-muller transform method
 ```{r}
 set.seed(45)
@@ -75,10 +54,11 @@ gmean = n_adds / 2
 gstd = sqrt(n_adds / 12)
 rescaled_gaussians = (gaussians - gmean) / gstd
 
+hist(rescaled_gaussians, nclass = 5)
+hist(rescaled_gaussians, nclass = 10)
+hist(rescaled_gaussians, nclass = 25)
 hist(rescaled_gaussians, nclass = 50)
-plot(rescaled_gaussians)
 
-##test commit
 ```
 
 
