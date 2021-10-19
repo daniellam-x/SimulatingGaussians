@@ -57,6 +57,7 @@ mus = c(5, 5)
 sigmas = c(c(1, .9), c(.9, 1))
 s = gibbs_sampler(mus, sigmas)
 
+#use for loop for zip
 burn = 100
 ```
 
