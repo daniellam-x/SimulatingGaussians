@@ -69,7 +69,12 @@ ggplot(df3, aes(x=rescaled_gaussians)) + geom_histogram(bins = 50)
 
 ```
 
+code real theortetical gaussian and find error for each method produced
+```{r}
 
+
+
+```
 
 
 
