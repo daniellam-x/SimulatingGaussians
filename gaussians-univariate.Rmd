@@ -21,6 +21,10 @@ df1 = data.frame(m1_x, m1_y)
 ggplot(df1, aes(x=m1_x)) + geom_histogram()
 ggplot(df1, aes(x=m1_y)) + geom_histogram()
 plot(m1_x, m1_y)
+
+s = rnorm(1000)
+ks.test(m1_x, "pnorm")
+
 ```
 
 box-muller transform method
@@ -43,6 +47,8 @@ df2 = data.frame(m2_x, m2_y)
 ggplot(df2, aes(x=m2_x)) + geom_histogram()
 ggplot(df2, aes(x=m2_y)) + geom_histogram()
 plot(m2_x, m2_y)
+
+ks.test(m2_y, "pnorm")
 ```
 
 
@@ -67,14 +73,10 @@ ggplot(df3, aes(x=rescaled_gaussians)) + geom_histogram(bins = 10)
 ggplot(df3, aes(x=rescaled_gaussians)) + geom_histogram(bins = 25)
 ggplot(df3, aes(x=rescaled_gaussians)) + geom_histogram(bins = 50)
 
+ks.test(rescaled_gaussians, "pnorm")
 ```
 
-code real theortetical gaussian and find error for each method produced
-```{r}
 
-
-
-```
 
 
 
