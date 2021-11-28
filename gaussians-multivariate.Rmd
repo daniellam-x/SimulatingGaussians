@@ -10,44 +10,77 @@ for (i in 1:1000){
 }
 hist(X[1,])
 plot(X[1,], X[2,], xlim = c(-5,5), ylim = c(-5,5))
+ks.test(X[1,], X[2,], "pnorm")
 ```
 ```{r}
-# mv_cd = function(mu, sigma){
-#   l = t(chol(sigma))
-#   r = length(mu)
-#   z = rnorm(r)
-#   return (l %*% Z + mu)
-# }
-# 
-# # X1 = matrix(0, nrow = 2, ncol = 1000)
-# # for (i in 1:1000){
-# #   X1[,i] = mv_cd(c(0,0),rbind(c(1.0, 0.9),c(0.9,1.0)))
-# # }
-# 
-# hist(X1[1,])
-# plot(X1[1,], X2[2,])
+mv_cd = function(mu, sigma){
+  l = t(chol(sigma))
+  r = length(mu)
+  z = rnorm(r)
+  return (l %*% z + mu)
+}
+
+X1 = matrix(0, nrow = 2, ncol = 1000)
+for (i in 1:1000){
+  X1[,i] = mv_cd(c(0,0),rbind(c(1.0, 0.9),c(0.9,1.0)))
+}
+
+hist(X1[1,])
+plot(X1[1,], X1[2,])
+```
+
+```{r}
+#establish variance-covariance matrix of bivariate gaussian
+sigma = rbind(c(1.0, 0.9),c(0.9,1.0))
+
+#perform cholesky decomposition to get matrix A
+A = t(chol(sigma))
+
+#set the mean vector of r length for the bivariate gaussian
+mu = c(0,0)
+n = 1000
+
+#populate Z matrix of n standard Gaussian distributions
+Z = matrix(0, nrow = 2, ncol = n)
+for (i in 1:n){
+  norms = rnorm(length(mu))
+  Z[1,i] = norms[1]
+  Z[2,i] = norms[2]
+}
+
+#simulate bivariate Gaussian
+X = (A %*% Z) + mu
+
+
+#visualize distribution
+hist(X[1,])
+hist(X[2,])
+plot(X[1,], X[2,])
+c = cor(X[1,], X[2,])
+c
 ```
 
 The Gibbs Sampler
 ```{r}
 px_given_y = function(y, mus, sigmas, n){
-  mu = mus[1] + sigmas[0][1] / sigmas[0][0] * (y - mus[1])
-  sigma = (sigmas[0][0] - sigmas[1][0]) / (sigmas[1][1] * sigmas[1][0])
+  mu = mus[1] + sigmas[2][1] / sigmas[1][1] * (y - mus[2])
+  sigma = (sigmas[1][1] - sigmas[2][1]) / (sigmas[2][2] * sigmas[2][1])
   return (rnorm(n, mu, sigma))
 }
 
 py_given_x = function(x, mus, sigmas, n){
-  mu = mus[1] + sigmas[0][1] / sigmas[1][1] * (x - mus[0])
-  sigma = (sigmas[1][1] - sigmas[0][1]) / (sigmas[0][0] * sigmas[0][1])
+  mu = mus[2] + sigmas[1][2] / sigmas[2][2] * (x - mus[1])
+  sigma = (sigmas[2][2] - sigmas[1][2]) / (sigmas[1][1] * sigmas[1][2])
   return (rnorm(n, mu, sigma)) 
 }
 
 gibbs_sampler = function(mus, sigma, n = 5000){
   samples = list(rep(0, n))
-  y = mus[1]
+  y = mus[2]
   for (i in range(n)){
     x = px_given_y(y, mus, sigmas, n)
     y = py_given_x(x, mus, sigmas, n)
+    print(c(x,y))
     samples[i] = c(x, y)
     return (samples)
   }
@@ -59,8 +92,50 @@ s = gibbs_sampler(mus, sigmas)
 
 #use for loop for zip
 burn = 100
+samples = s[(burn + 1):length(s)]
+graph_x = 1:length(samples)
+graph_y = 1:length(samples)
+
+
 ```
 
+
+```{r}
+px_given_y = function(y, mu, sigma){
+  m = mu[1] + sigma[2,1] / sigma[1,1] * (y - mu[2])
+  s = sigma[1,1] - sigma[2,1] / sigma[2,2] * sigma[2,1]
+  return (rnorm(1, mean = m, sd = s))
+}
+
+py_given_x = function(x, mu, sigma){
+  m = mu[2] + sigma[1,2] / sigma[2,2] * (x - mu[1])
+  s = sigma[2,2] - sigma[1,2] / sigma[1,1] * sigma[1,2]
+  return (rnorm(1, mean = m, sd = s))
+}
+
+mus = c(0,0)
+sigma = rbind(c(1.0, 0.9),c(0.9,1.0))
+n = 5000
+
+samples_x = rep(0, n)
+samples_y = rep(0, n)
+y = mu[2]
+for (i in 1:n){
+  x = px_given_y(y, mus, sigma)
+  y = py_given_x(x, mus, sigma)
+  samples_x[i] = x
+  samples_y[i] = y
+}
+
+burn = 4000
+bsamples_x = samples_x[(burn + 1): length(samples_x)]
+bsamples_y = samples_y[(burn + 1): length(samples_y)]
+hist(bsamples_x)
+hist(bsamples_y)
+plot(bsamples_x, bsamples_y)
+
+
+```
 
 
 
