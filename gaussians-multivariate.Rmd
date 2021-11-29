@@ -25,10 +25,11 @@ X = (A %*% Z) + mu
 (nrow(X))
 (ncol(X))
 
+#name vectors
 xdim = X[1,]
 ydim = X[2,]
 
-
+#simulate sample correlation - 100 points
 corrs = rep(0, 100)
 first = 1
 j = 1
@@ -91,6 +92,7 @@ burn = 4000
 bsamples_x = samples_x[(burn + 1): length(samples_x)]
 bsamples_y = samples_y[(burn + 1): length(samples_y)]
 
+#simulate sample correlation - 100 points
 gs_corrs = rep(0, 100)
 first = 1
 j = 1
