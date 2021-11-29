@@ -1,6 +1,7 @@
 
 Cholesky Decomposition
 ```{r}
+library(ggplot2)
 #establish variance-covariance matrix of bivariate gaussian
 sigma = rbind(c(1.0, 0.9),c(0.9,1.0))
 
@@ -21,14 +22,34 @@ for (i in 1:n){
 
 #simulate bivariate Gaussian
 X = (A %*% Z) + mu
+(nrow(X))
+(ncol(X))
 
+xdim = X[1,]
+ydim = X[2,]
+
+
+corrs = rep(0, 100)
+first = 1
+j = 1
+for (i in 1:1000){
+  if (i %% 10 == 0){
+    x = xdim[first:i]
+    y = ydim[first:i]
+    corrs[j] = cor(x, y)
+    
+    j = j + 1
+    first = i
+  }
+}
 
 #visualize distribution
-hist(X[1,])
-hist(X[2,])
-plot(X[1,], X[2,])
-c = cor(X[1,], X[2,])
-c
+df4 = data.frame(xdim, ydim)
+dfc = data.frame(corrs)
+ggplot(df4, aes(x=xdim)) + geom_histogram(col = 'black', fill = 'lightblue',) + labs(title = "Cholesky Decomposition Bivariate Gaussian Sampling Distribution", x = "Value Sampled", y = "Count")
+ggplot(df4, aes(x = xdim, y = ydim)) + geom_point(col = "black") + labs(title = "2D Scatterplot of Cholesky Decomposition Bivariate Gaussian Distribution", x = "x", y = "y")
+ggplot(dfc, aes(x=corrs)) + geom_histogram(col = 'black', fill = 'lightgreen',) + labs(title = "Cholesky Decomposition Sample Correlation", x = "Correlation", y = "Count")
+(cor(xdim, ydim))
 ```
 
 The Gibbs Sampler
@@ -70,10 +91,27 @@ burn = 4000
 bsamples_x = samples_x[(burn + 1): length(samples_x)]
 bsamples_y = samples_y[(burn + 1): length(samples_y)]
 
+gs_corrs = rep(0, 100)
+first = 1
+j = 1
+for (i in 1:1000){
+  if (i %% 10 == 0){
+    x = bsamples_x[first:i]
+    y = bsamples_y[first:i]
+    gs_corrs[j] = cor(x, y)
+    j = j + 1
+    first = i
+  }
+}
+
+
 #visualize
-hist(bsamples_x)
-hist(bsamples_y)
-plot(bsamples_x, bsamples_y)
+df5 = data.frame(bsamples_x, bsamples_y)
+dfgs = data.frame(gs_corrs)
+ggplot(df5, aes(x=bsamples_x)) + geom_histogram(col = 'black', fill = 'lightblue',) + labs(title = "Gibbs Sampling Bivariate Gaussian Distribution", x = "Value Sampled", y = "Count")
+ggplot(df5, aes(x = bsamples_x, y = bsamples_y)) + geom_point(col = "black") + labs(title = "2D Scatterplot of Gibbs Sampling Bivariate Gaussian Distribution", x = "x", y = "y")
+ggplot(dfgs, aes(x=gs_corrs)) + geom_histogram(col = 'black', fill = 'lightgreen',) + labs(title = "Gibbs Sampling Sample Correlation", x = "Correlation", y = "Count")
+(cor(bsamples_x, bsamples_y))
 
 
 ```
