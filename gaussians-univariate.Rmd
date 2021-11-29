@@ -18,12 +18,14 @@ m1_y = qnorm(m1_u2)
 
 df1 = data.frame(m1_x, m1_y)
 
-ggplot(df1, aes(x=m1_x)) + geom_histogram()
-ggplot(df1, aes(x=m1_y)) + geom_histogram()
-plot(m1_x, m1_y)
+ggplot(df1, aes(x=m1_x)) + geom_histogram(col = 'black', fill = 'lightblue',) + labs(title = "Inverse CDF Sampling Distribution", x = "Value Sampled", y = "Count")
+      
+# ggplot(df1, aes(x=m1_y)) + geom_histogram()
+ggplot(df1, aes(x = m1_x, y = m1_y)) + geom_point(col = "black") + labs(title = "2D Scatterplot of Inverse CDF Distribution", x = "x", y = "y")
 
-s = rnorm(1000)
-ks.test(m1_x, "pnorm")
+ggplot(df1, aes(sample = m1_x)) + stat_qq(col = "red") + stat_qq_line() + labs(title = "Inverse CDF QQ-Plot")
+
+x = ks.test(m1_x, "pnorm")
 
 ```
 
@@ -44,11 +46,13 @@ m2_y = r * sin(theta)
 
 df2 = data.frame(m2_x, m2_y)
 
-ggplot(df2, aes(x=m2_x)) + geom_histogram()
-ggplot(df2, aes(x=m2_y)) + geom_histogram()
-plot(m2_x, m2_y)
+ggplot(df2, aes(x=m2_x)) + geom_histogram(col = 'black', fill = 'lightblue',) + labs(title = "Box-Muller Sampling Distribution", x = "Value Sampled", y = "Count")
+# ggplot(df2, aes(x=m2_y)) + geom_histogram()
+ggplot(df2, aes(x = m2_x, y = m2_y)) + geom_point(col = "black") + labs(title = "2D Scatterplot of Box-Muller Distribution", x = "x", y = "y")
 
-ks.test(m2_y, "pnorm")
+ggplot(df2, aes(sample = m2_x)) + stat_qq(col = "red") + stat_qq_line() + labs(title = "Box-Muller QQ-Plot")
+
+y = ks.test(m2_y, "pnorm")
 ```
 
 
@@ -68,13 +72,30 @@ rescaled_gaussians = (gaussians - gmean) / gstd
 
 df3 = data.frame(rescaled_gaussians)
 
-ggplot(df3, aes(x=rescaled_gaussians)) + geom_histogram(bins = 5)
-ggplot(df3, aes(x=rescaled_gaussians)) + geom_histogram(bins = 10)
-ggplot(df3, aes(x=rescaled_gaussians)) + geom_histogram(bins = 25)
-ggplot(df3, aes(x=rescaled_gaussians)) + geom_histogram(bins = 50)
+ggplot(df3, aes(x = rescaled_gaussians)) + geom_histogram(col = 'black', fill = 'lightblue', bins = 5) + labs(title = "Central Limit Theorem Sampling Distribution", x = "Value Sampled", y = "Count")
 
-ks.test(rescaled_gaussians, "pnorm")
+ggplot(df3, aes(x = rescaled_gaussians)) + geom_histogram(col = 'black', fill = 'lightblue', bins = 10) + labs(title = "Central Limit Theorem Sampling Distribution", x = "Value Sampled", y = "Count")
+
+ggplot(df3, aes(x = rescaled_gaussians)) + geom_histogram(col = 'black', fill = 'lightblue', bins = 25) + labs(title = "Central Limit Theorem Sampling Distribution", x = "Value Sampled", y = "Count")
+
+ggplot(df3, aes(x = rescaled_gaussians)) + geom_histogram(col = 'black', fill = 'lightblue', bins = 50) + labs(title = "Central Limit Theorem Sampling Distribution", x = "Value Sampled", y = "Count")
+
+# ggplot(df3, aes(x=rescaled_gaussians)) + geom_histogram(bins = 5)
+# ggplot(df3, aes(x=rescaled_gaussians)) + geom_histogram(bins = 10)
+# ggplot(df3, aes(x=rescaled_gaussians)) + geom_histogram(bins = 25)
+# ggplot(df3, aes(x=rescaled_gaussians)) + geom_histogram(bins = 50)
+
+ggplot(df3, aes(sample = rescaled_gaussians)) + stat_qq(col = "red") + stat_qq_line() + labs(title = "Central Limit Theorem QQ-Plot")
+
+z = ks.test(rescaled_gaussians, "pnorm")
+
 ```
+
+```{r}
+test_data = data.frame(group = c("Inverse CDF", "Box-Muller", "Central Limit Thm"), D_Statistic = c(0.01746531, 0.02621048, 0.02691662), P_value = c(0.9204866, 0.4979976, 0.4635318))
+
+test_data
+````
 
 
 
